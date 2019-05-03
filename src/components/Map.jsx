@@ -1,44 +1,32 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { withGoogleMap, GoogleMap, Marker } from "react-google-maps"
+import React, { Component } from "react"
+import ReactMapGL from "react-map-gl"
+//import 'mapbox-gl/dist/mapbox-gl.css';
+import "../styles/Map.scss"
 
-const InnerMap = withGoogleMap( ({location, marker, quests, markerClick}) => (
-    <GoogleMap
-      defaultZoom={13}
-      defaultCenter={location}
-      center={location}
-      gestureHandling="greedy"
-    >
-        {/* <Marker 
-            {...marker}
-        /> */}
-        {quests.map((quest,index) => (
-            <Marker 
-              position={quest.location}
-              key={index}
-              onClick={markerClick.bind(this, quest)}
-            />
-          )
-        )}
-    </GoogleMap>
-));
-  
-const Map = ({location,markerClick,quests}) => {
-  return (
-  <InnerMap
-    containerElement={(<div />)}
-    mapElement={(<div className="map" />)}
-    center={location}
-    location={location}
-    marker={{position: location, onClick: markerClick}}
-    markerClick={markerClick}
-    quests={quests}
-  />
-)}
+const token = "pk.eyJ1IjoidGFrYW5vcmlmdWt1eWFtYSIsImEiOiJjanQybTAxc3UwamVrNDRsdm84OHVqdmxhIn0.jcgc3xIqdApUUed_5cexUw"
 
-Map.propTypes = {
-  location: PropTypes.objectOf(PropTypes.number).isRequired,
+
+class Map extends Component {
+  state = {
+    viewport:{
+      width: 400,
+      height: 400,
+      latitude: 37.7577,
+      longitude: -122.4376,
+      zoom: 8,
+    }
+  }
+  render(){
+    return(
+      <ReactMapGL
+        className="map"
+        {...this.state.viewport} 
+        onViewportChange={(viewport) => this.setState({viewport})}
+        mapboxApiAccessToken={token}
+      >
+
+      </ReactMapGL>
+    )
+  }
 }
-
-
 export default Map;
