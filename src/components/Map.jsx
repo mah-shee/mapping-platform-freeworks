@@ -1,43 +1,32 @@
 import React from "react"
-import PropTypes from "prop-types"
-import { withGoogleMap, GoogleMap, Marker } from "react-google-maps"
+import "../styles/Map.scss"
 
-const InnerMap = withGoogleMap( ({location, marker, quests, markerClick}) => (
-    <GoogleMap
-      defaultZoom={13}
-      defaultCenter={location}
-      center={location}
-      gestureHandling="greedy"
-    >
-        {/* <Marker 
-            {...marker}
-        /> */}
-        {quests.map((quest,index) => (
-            <Marker 
-              position={quest.location}
-              key={index}
-              onClick={markerClick.bind(this, quest)}
-            />
-          )
-        )}
-    </GoogleMap>
-));
-  
-const Map = ({location,markerClick,quests}) => {
-  return (
-  <InnerMap
-    containerElement={(<div />)}
-    mapElement={(<div className="map" />)}
-    center={location}
-    location={location}
-    marker={{position: location, onClick: markerClick}}
-    markerClick={markerClick}
-    quests={quests}
-  />
-)}
+class Map extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      map: null
+    }
+  }
 
-Map.propTypes = {
-  location: PropTypes.objectOf(PropTypes.number).isRequired,
+  componentDidMount(){
+    const map = new window.google.maps.Map(
+      document.getElementById("map"),
+      {
+        center: new window.google.maps.LatLng(35.466642, 139.622485),
+        zoom: 15,
+        mapTypeId: "roadmap"
+      }
+    )
+    this.setState({"map":map})
+    console.log("map is open")
+  }
+
+  render(){
+    return(
+      <div id="map" />
+    )
+  }
 }
 
 

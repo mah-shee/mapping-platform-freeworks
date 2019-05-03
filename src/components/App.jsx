@@ -1,17 +1,8 @@
 import React, { Component } from 'react';
-import axios from "axios"
-import { Card, CardHeader, CardActionArea, Avatar, CardMedia, CardContent, CardActions, Button, Typography } from "@material-ui/core"
-// import MoreVertIcon from "@material-ui/icons/MoreVert"
 import Grow from "@material-ui/core/Grow"
-import IconButton from "@material-ui/core/IconButton"
-import Clear from "@material-ui/icons/Clear"
-//import SearchForm from "./SearchForm"
-//import GeocodeResult from "./GeocodeResult"
+import { Card, Button} from "@material-ui/core/"
 import Map from "./Map"
-import { currentLocation, getAllQuests } from "../domains/index"
 import '../styles/App.scss';
-
-const GEOCODE_ENDPOINT = 'https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyAOaeuXU_Hlf731vA_BdOoLKwdJ-udINAI'
 
 
 class App extends Component {
@@ -34,28 +25,9 @@ class App extends Component {
         reward: null,
       },
     }
-    currentLocation()
-    getAllQuests()
     
     //quests.map(quest=>console.log("quest:",quest))
 
-  }
-  currentLocation = () => {
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(
-        position =>	{
-          const data = position.coords
-          console.log({lat: data.latitude, lng: data.longitude})
-          this.setState({location: {lat: data.latitude, lng: data.longitude}})
-        },
-        error => {
-          console.log(error)
-        }
-      )
-    } else {
-      console.error("Geolocation APIに非対応")
-      return
-    }
   }
   
   markerClick = quest => {
@@ -76,54 +48,13 @@ class App extends Component {
     this.setState({checked: false});
   }
 
-  setErrorMessage = message => {
-    this.setState({
-      address: message,
-      location: {
-        lat: 0,
-        lng: 0,
-      },
-    })
-  }
   
-  handlePlaceSubmit = place => {
-    axios.get(GEOCODE_ENDPOINT, { params: { address: place }})
-    .then( results => {
-      //success
-      const data = results.data
-      const result = data.results[0]
-      switch(data.status){
-        case 'OK': {
-          this.setState({
-            address: result.formatted_address,
-            location : result.geometry.location,
-          })
-          break;
-        }
-        case 'ZERO_RESULTS':{
-          this.setErrorMessage("Not founded.")
-          break;
-        }
-        default: {
-          this.setErrorMessage("Error!!")
-          break;
-        }
-      }
-    })
-    .catch(() => {
-      this.setErrorMessage("通信エラー")
-    })
-    
-  }
 
   render() {
     
     return (
       <div className="App">
         <Map
-          location={this.state.location}
-          markerClick={this.markerClick}
-          quests={this.state.quests}
         />
         <Grow
           in={this.state.checked}
@@ -131,51 +62,12 @@ class App extends Component {
           {...(this.state.checked ? { timeout: 1000 } : {})}
         >
           <Card className="InfoCard">
-              <CardHeader avatar={
-                <Avatar>R</Avatar>
-              }
-              action={
-                <IconButton onClick={this.closeIcon}>
-                  <Clear/>
-                </IconButton>
-              }
-              title={this.state.quest.name}
-              subheader={`Rewards : ${this.state.quest.reward}円`}
-              />
-            <CardActionArea>
-              <CardMedia 
-                style={{height: "15vh"}}
-                image={this.state.quest.photoURL} />
-              <CardContent>
-              {this.state.quest.name}
-              <Typography component="p">
-                Time List
-              </Typography>
-              {/* <div className="timegrid">
-                <GridList className="gridlist" cols={1.0}>
-                  {["11am","12am","1pm","2pm"].map((tile,index) => (
-                    <GridListTile key={index}>
-                      <Button
-                        variant="contained"
-                        color="inherit"
-                      >
-                        {tile}
-                      </Button>
-                    </GridListTile>
-                  ))}
-                </GridList>
-              </div> */}
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              
               <Button size="small" color="primary">
                 時間を選ぶ
               </Button>
               <Button size="small" color="primary">
                 キャンセル
               </Button>
-            </CardActions>
             
           </Card>  
         </Grow>
