@@ -1,44 +1,23 @@
 import React from "react"
-import PropTypes from "prop-types"
-import { withGoogleMap, GoogleMap, Marker } from "react-google-maps"
+import mapboxgl from "mapbox-gl"
+import 'mapbox-gl/dist/mapbox-gl.css'
 
-const InnerMap = withGoogleMap( ({location, marker, quests, markerClick}) => (
-    <GoogleMap
-      defaultZoom={13}
-      defaultCenter={location}
-      center={location}
-      gestureHandling="greedy"
-    >
-        {/* <Marker 
-            {...marker}
-        /> */}
-        {quests.map((quest,index) => (
-            <Marker 
-              position={quest.location}
-              key={index}
-              onClick={markerClick.bind(this, quest)}
-            />
-          )
-        )}
-    </GoogleMap>
-));
-  
-const Map = ({location,markerClick,quests}) => {
-  return (
-  <InnerMap
-    containerElement={(<div />)}
-    mapElement={(<div className="map" />)}
-    center={location}
-    location={location}
-    marker={{position: location, onClick: markerClick}}
-    markerClick={markerClick}
-    quests={quests}
-  />
-)}
-
-Map.propTypes = {
-  location: PropTypes.objectOf(PropTypes.number).isRequired,
+class Map extends React.Component{
+  componentDidMount(){
+    this.map = new mapboxgl.Map({
+      container: this.container,
+      style: 'mapbox://styles/mapbox/streets-v9',
+      zoom:15,
+    })
+  }
+  componentWillUnmount(){
+    this.map.remove()
+  }
+  render(){
+    const styles = {
+      height: "100vh",
+    }
+    return <div className={'map'} ref={e => (this.container = e)} style={styles} />
+  }
 }
-
-
 export default Map;

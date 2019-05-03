@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from "axios"
 import { Card, CardHeader, CardActionArea, Avatar, CardMedia, CardContent, CardActions, Button, Typography } from "@material-ui/core"
 // import MoreVertIcon from "@material-ui/icons/MoreVert"
 import Grow from "@material-ui/core/Grow"
@@ -8,10 +7,8 @@ import Clear from "@material-ui/icons/Clear"
 //import SearchForm from "./SearchForm"
 //import GeocodeResult from "./GeocodeResult"
 import Map from "./Map"
-import { currentLocation, getAllQuests } from "../domains/index"
 import '../styles/App.scss';
 
-const GEOCODE_ENDPOINT = 'https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyAOaeuXU_Hlf731vA_BdOoLKwdJ-udINAI'
 
 
 class App extends Component {
@@ -34,8 +31,6 @@ class App extends Component {
         reward: null,
       },
     }
-    currentLocation()
-    getAllQuests()
     
     //quests.map(quest=>console.log("quest:",quest))
 
@@ -86,36 +81,7 @@ class App extends Component {
     })
   }
   
-  handlePlaceSubmit = place => {
-    axios.get(GEOCODE_ENDPOINT, { params: { address: place }})
-    .then( results => {
-      //success
-      const data = results.data
-      const result = data.results[0]
-      switch(data.status){
-        case 'OK': {
-          this.setState({
-            address: result.formatted_address,
-            location : result.geometry.location,
-          })
-          break;
-        }
-        case 'ZERO_RESULTS':{
-          this.setErrorMessage("Not founded.")
-          break;
-        }
-        default: {
-          this.setErrorMessage("Error!!")
-          break;
-        }
-      }
-    })
-    .catch(() => {
-      this.setErrorMessage("通信エラー")
-    })
-    
-  }
-
+  
   render() {
     
     return (
